@@ -29,6 +29,7 @@ class Parser{
    
    for(int i = 1; i < lines.length; i++){
      buffer = split(lines[i], ',');
+     player_names[i - 1] = buffer[0];
      for(int j = 0; j < columns.size(); j++){ //starts at 1 because of first col in dataset of player names
        Column curr_col = (Column)columns.get(j); // 
        curr_col.add_move(int(buffer[j + 1]), i - 1); //i - 1 corresponds to the player
@@ -64,8 +65,9 @@ class Parser{
      Task curr_task = (Task)tasks.get(i);
      curr_task.finish_initialization();  
    }
-    Task curr_task = (Task)tasks.get(1);
-    curr_task.print_scores();
+   Task curr_task = (Task)tasks.get(1);
+   curr_task.print_scores();
   }
-  
 }
+    
+
