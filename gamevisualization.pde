@@ -1,11 +1,8 @@
   /* constants that control the sizes of various display elements */
-final int PLAYERS_DISPLAYED = 30; // the max number of players on the screen at once
-final int STRING_WIDTH = 50; // width on the screen available for player strings 
-final float ROW_HEIGHT = 12;   // height on the screen for player rows
-final int SPACING = 5;      // width on the screen bedtween player rows
-
-final int WINDOW_WIDTH = 800;
-final int WINDOW_HEIGHT = 600;
+int max_players_displayable; // the max number of players on the screen at once
+float string_width; // width on the screen available for player strings 
+float row_height;   // height on the screen for player rows
+float spacing;      // width on the screen bedtween player rows
 
 Parser parser;
 int start_index;   // topmost player displayed
@@ -17,27 +14,37 @@ int selected_mission;
 int num_players;
 
 void setup(){
-  size(WINDOW_WIDTH, WINDOW_HEIGHT);
+  size(800, 600);
+  frame.setResizable(true);
+  setScreenDimensions();
   parser = new Parser("tasks.csv");
   tasks = parser.getTasks();
   players = parser.getPlayers();
   num_players = parser.getNumPlayers();
   start_index = 0;
-  if(num_players < PLAYERS_DISPLAYED)
+  if(num_players < max_players_displayable)
     end_index = num_players - 1;
   else
-    end_index = start_index + PLAYERS_DISPLAYED;
+    end_index = start_index + max_players_displayable;
   selected_task = 9;
   selected_mission = 1;
+  println(max_players_displayable);
+}
+
+void setScreenDimensions() {
+  string_width = .1 * width;
+  row_height = .03 * height;
+  spacing = .25 * row_height;
+  max_players_displayable = (int)(height / (row_height + spacing));
 }
 
 void draw(){
+  setScreenDimensions();
   Task t = (Task)tasks.get(selected_task);
   background(255);
   for(int i = start_index; i < end_index; i++) {
     drawPlayer(find_player_with_rank(t, selected_mission, i + 1));
   }
-  println(' ');
 }
 
 int find_player_with_rank(Task t, int mission, int rank) {
@@ -53,18 +60,18 @@ void drawPlayer(int player) {
   Task t = (Task)tasks.get(selected_task);
   int bg;
   float x_pos = 0;
-  int player_pos = t.get_rank(player, selected_mission);
-  float y_pos = (player_pos * ROW_HEIGHT) + (player_pos * SPACING);
+  int player_pos = t.get_rank(player, selected_mission) - 1;
+  float y_pos = (player_pos * row_height) + (player_pos * spacing);
   fill(0);
-  textSize(ROW_HEIGHT * .7);
-  text(players[player], x_pos, y_pos, STRING_WIDTH, ROW_HEIGHT);
+  textSize(row_height * .7);
+  text(players[player], x_pos, y_pos, string_width, row_height);
   int num_missions = t.get_num_objectives();
-  float box_width = (WINDOW_WIDTH - STRING_WIDTH - 5) / num_missions;
-  x_pos += (STRING_WIDTH + 5);
+  float box_width = (width - string_width - 5) / num_missions;
+  x_pos += (string_width + 5);
   final int COLOR_DIFF = 230 / num_players;
   for(int i = 0; i < num_missions; i++) {
     bg = 255 - (25 + (t.get_rank(player, i) * COLOR_DIFF));
     fill(255, bg, bg);
-    rect(x_pos + (i * box_width), y_pos, box_width, ROW_HEIGHT);
+    rect(x_pos + (i * box_width), y_pos, box_width, row_height);
   }
 }
