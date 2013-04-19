@@ -48,14 +48,12 @@ void setScreenDimensions() {
 
 void draw(){
   setScreenDimensions();
-  fill(0);
-  stroke(0);
+  Task t = (Task)tasks.get(selected_task);
+  background(255);
   line(0, title_height, width, title_height);
   line(0, title_height + task_view_height, width, title_height + task_view_height);
   line(0, title_height + task_view_height + mission_caption_height,
       width, title_height + task_view_height + mission_caption_height);
-  Task t = (Task)tasks.get(selected_task);
-  background(255);
   for(int i = start_index; i < end_index; i++) {
     drawPlayer(find_player_with_rank(t, selected_mission, i + 1));
   }
