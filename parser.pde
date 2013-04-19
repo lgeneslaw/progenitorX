@@ -66,7 +66,18 @@ class Parser{
      curr_task.finish_initialization();  
    }
    Task curr_task = (Task)tasks.get(1);
-   curr_task.print_scores();
+  }
+
+  public ArrayList getTasks() {
+    return tasks;
+  }
+  
+  public String[] getPlayers() {
+    return player_names;
+  }
+  
+  public int getNumPlayers() {
+    return num_players;
   }
 }
     

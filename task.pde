@@ -30,7 +30,6 @@ class Task{
  }*/
  
  
- 
  public boolean determine_onoff(){
    return name.substring(1,2) == "n";
  }
@@ -51,6 +50,10 @@ class Task{
    return num_players;
  }
  
+ public int get_rank(int player, int mission) {
+   return ranks[player][mission];
+ }
+ 
  public String get_name(){
    return name; 
  }
@@ -59,6 +62,7 @@ class Task{
    columns.add(col);
    num_columns++;
  }
+ 
  
  public void finish_initialization(){
    scores = new int[num_players][num_columns];
@@ -73,7 +77,6 @@ class Task{
    }
    
    sort_missions();
-   print_ranks();
  }
  
  private void sort_missions() {
