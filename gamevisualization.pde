@@ -3,6 +3,10 @@ int max_players_displayable; // the max number of players on the screen at once
 float string_width; // width on the screen available for player strings 
 float row_height;   // height on the screen for player rows
 float spacing;      // width on the screen bedtween player rows
+float title_height; // height at top of screen for Task title
+float task_view_height; // height of the main task display
+float mission_caption_height; // height of the mission numbers at the bottom of each column
+float control_space_height;   // height of the control space at the bottom of the screen
 
 Parser parser;
 int start_index;   // topmost player displayed
@@ -32,14 +36,24 @@ void setup(){
 }
 
 void setScreenDimensions() {
+  title_height = .05 * height;
+  control_space_height = .1 * height;
+  mission_caption_height = title_height;
+  task_view_height = height - title_height - mission_caption_height - control_space_height;
   string_width = .1 * width;
-  row_height = .03 * height;
+  row_height = .03 * task_view_height;
   spacing = .25 * row_height;
-  max_players_displayable = (int)(height / (row_height + spacing));
+  max_players_displayable = (int)(task_view_height / (row_height + spacing));
 }
 
 void draw(){
   setScreenDimensions();
+  fill(0);
+  stroke(0);
+  line(0, title_height, width, title_height);
+  line(0, title_height + task_view_height, width, title_height + task_view_height);
+  line(0, title_height + task_view_height + mission_caption_height,
+      width, title_height + task_view_height + mission_caption_height);
   Task t = (Task)tasks.get(selected_task);
   background(255);
   for(int i = start_index; i < end_index; i++) {
@@ -61,7 +75,7 @@ void drawPlayer(int player) {
   int bg;
   float x_pos = 0;
   int player_pos = t.get_rank(player, selected_mission) - 1;
-  float y_pos = (player_pos * row_height) + (player_pos * spacing);
+  float y_pos = title_height + (player_pos * row_height) + (player_pos * spacing);
   fill(0);
   textSize(row_height * .7);
   text(players[player], x_pos, y_pos, string_width, row_height);
