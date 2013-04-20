@@ -29,6 +29,10 @@ class Task{
    ranks = new int[num_players][num_missions];
  }*/
  
+ public int get_objective_num(int index){
+   Column col = (Column)columns.get(index);
+   return col.get_objective_number();
+ }
  
  public boolean determine_onoff(){
    return name.substring(1,2) == "n";

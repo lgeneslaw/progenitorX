@@ -65,7 +65,6 @@ class Parser{
      Task curr_task = (Task)tasks.get(i);
      curr_task.finish_initialization();  
    }
-   Task curr_task = (Task)tasks.get(1);
   }
 
   public ArrayList getTasks() {
