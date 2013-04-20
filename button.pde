@@ -31,6 +31,7 @@ class Button{
      mouseY >= y_coord && mouseY <= (y_coord + b_height));
   return clicked;
  }
+ 
  public void draw_button(){
    if(intersected || clicked){
      fill(145, 255, 215);
@@ -40,8 +41,8 @@ class Button{
    }
    rect(x_coord, y_coord, b_width, b_height);
    fill(0);
-   if(name == ">" || name == "<"){
-     textSize((b_width + b_height) * .4);
+   if(name == ">" || name == "<" || name == "^" || name == "v") {
+     textSize((b_width + b_height) * .3);
    }
    else{
      textSize((b_width + b_height) * .06);
@@ -49,4 +50,12 @@ class Button{
    text(name, x_coord, y_coord, b_width, b_height);//,x_coord + b_width, y_coord + b_height);
  }
  
+  public void draw_button_inactive() {
+    fill(230);
+    stroke(200);
+    rect(x_coord, y_coord, b_width, b_height);
+    textSize((b_width + b_height) * .3);
+    fill(150);
+    text(name, x_coord, y_coord, b_width, b_height);  
+  }
 }
