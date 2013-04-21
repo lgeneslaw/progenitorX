@@ -120,7 +120,7 @@ void draw_player_scroll_buttons() {
     
   y = center_y + (2 * b_height);
   player_next.update_button(x, y, b_width, b_height);
-  if(end_index != (num_players - 1))
+  if(end_index != num_players)
     player_next.draw_button();
   else
     player_next.draw_button_inactive();
@@ -250,7 +250,7 @@ void mouseClicked(){
   }
   
   if(player_next.check_intersection()){
-    if(end_index != (num_players - 1)){
+    if(end_index != num_players){
       start_index++;
       end_index++;
     }
