@@ -9,6 +9,7 @@ float mission_caption_height; // height of the mission numbers at the bottom of 
 float control_space_height;   // height of the control space at the bottom of the screen
 float player_scroll_width;
 
+int num_improves_displayed; //number of improvement selection categories
 int num_tasks_displayed;
 int first_task_displayed;
 
@@ -16,6 +17,9 @@ Parser parser;
 PrePostParser diffparser;
 int start_index;   // topmost player displayed
 int end_index;     // bottommost player displayed
+float lo_improve;
+float hi_improve;
+int improve_group_index;
 ArrayList tasks;   // one entry per task page
 String players[];  // maps array indeces to player names
 float differences[]; //pre-post score differences, value is a %
@@ -27,6 +31,7 @@ Button task_prev;
 Button task_next;
 Button player_prev;
 Button player_next;
+Button improvement[];
 
 
 
@@ -51,16 +56,20 @@ void setup(){
   for(int i = 0; i < task_buttons.length; i++){
     task_buttons[i] = new Button(((Task)tasks.get(i)).get_name());
   }
-  
+  num_improves_displayed = 4;
+  improve_group_index = -1;
   num_tasks_displayed = 4; //temporary. displaying four task buttons at bottom
   first_task_displayed = selected_task;
   task_prev = new Button("<");
   task_next = new Button(">");
   player_prev = new Button("^");
   player_next = new Button("v");
+  improvement = new Button[num_improves_displayed];
+  improvement[0] = new Button("51+");
+  improvement[1] = new Button("50 - 26");
+  improvement[2] = new Button("25 - 1");
+  improvement[3] = new Button("Did not improve");
 }
-
-
 
 void setScreenDimensions() {
   title_height = .05 * height;
@@ -101,42 +110,25 @@ void draw(){
     
   //Testing out the drawing of one button;
   draw_task_buttons();
+  draw_improve_buttons();
   draw_player_scroll_buttons();
   }
 }
 
-
-
-
-void draw_player_scroll_buttons() {
-  float b_width = .6 * player_scroll_width;
-  float b_height = .07 * height;
-  float center_y = (height - title_height - control_space_height) / 2;
-  float center_x = width - (player_scroll_width / 2);
-  float x = center_x - (b_width / 2);
-  float y = center_y - (1.5 * b_height);
-  
-  player_prev.update_button(x, y, b_width, b_height);
-  if(start_index != 0)
-    player_prev.draw_button();
-  else
-    player_prev.draw_button_inactive();
-    
-  y = center_y + (2 * b_height);
-  player_next.update_button(x, y, b_width, b_height);
-  if(end_index != num_players)
-    player_next.draw_button();
-  else
-    player_next.draw_button_inactive();
+void draw_improve_buttons(){
+   float y = height - (control_space_height * .75);
+   float b_width = (width / 2 / num_improves_displayed) * .75;
+   float button_spacing = (b_width / .75) * .125;
+   float x = button_spacing + (width / 2) * 12/11;
+   float b_height = control_space_height / 2;
+   
+   for(int i = 0; i < num_improves_displayed; i++){
+     improvement[i].update_button(x, y, b_width, b_height);
+     x = x + button_spacing + b_width;
+     improvement[i].draw_button();
+   }
+   
 }
-
-
-
-void draw_mission_buttons(){
-  //Needs to be filled in
-}
-
-
 
 void draw_task_buttons(){
   float y = height - (control_space_height * .75);
@@ -181,7 +173,33 @@ void draw_task_buttons(){
 }
 
 
+void draw_player_scroll_buttons() {
+  float b_width = .6 * player_scroll_width;
+  float b_height = .07 * height;
+  float center_y = (height - title_height - control_space_height) / 2;
+  float center_x = width - (player_scroll_width / 2);
+  float x = center_x - (b_width / 2);
+  float y = center_y - (1.5 * b_height);
+  
+  player_prev.update_button(x, y, b_width, b_height);
+  if(start_index != 0)
+    player_prev.draw_button();
+  else
+    player_prev.draw_button_inactive();
+    
+  y = center_y + (2 * b_height);
+  player_next.update_button(x, y, b_width, b_height);
+  if(end_index != num_players)
+    player_next.draw_button();
+  else
+    player_next.draw_button_inactive();
+}
 
+
+
+void draw_mission_buttons(){
+  //Needs to be filled in
+}
 
 int find_player_with_rank(Task t, int rank) {
   for(int i = 0; i < num_players; i++) {
@@ -200,8 +218,15 @@ void drawPlayer(int player) {
   int player_pos = t.get_rank(player, selected_mission) - 1 - start_index;
   float y_pos = title_height + (player_pos * row_height) + (player_pos * spacing);
   fill(0);
-  stroke(0);
+  int diff = int(differences[player]);
+  if(improve_group_index != -1 && diff >= lo_improve && diff <= hi_improve){
+    strokeWeight(3);
+  }
+  else{
+    strokeWeight(1);   
+  }
   textSize(row_height * .7);
+  stroke(0);
   text(players[player], x_pos, y_pos, string_width, row_height);
   int num_missions = t.get_num_objectives();
   float box_width = (width - string_width - player_scroll_width - 5) / num_missions;
@@ -212,6 +237,7 @@ void drawPlayer(int player) {
     fill(255, bg, bg);
     rect(x_pos + (i * box_width), y_pos, box_width, row_height);
   }
+  strokeWeight(1);
 }
 
 
@@ -224,9 +250,10 @@ void mouseMoved(){
   task_next.check_intersection();
   player_prev.check_intersection();
   player_next.check_intersection();
+  for(int i = 0; i < improvement.length; i++){
+    improvement[i].check_intersection();
+  }
 }
-
-
 
 void mouseClicked(){
   for(int i = 0; i < task_buttons.length; i++){
@@ -235,6 +262,10 @@ void mouseClicked(){
       selected_mission = 0;
     }
   }
+  
+  task_buttons[selected_task].set_click_state(true);
+  
+  
   if(task_prev.check_intersection()){
     if(first_task_displayed != 0){
       first_task_displayed--;
@@ -259,5 +290,34 @@ void mouseClicked(){
       end_index++;
     }
   }
-
+  
+  for(int i = 0; i < improvement.length; i++){
+    if(improvement[i].clicked_on()){
+      if(improve_group_index == i){
+        improvement[i].set_click_state(false);
+        improve_group_index = -1;
+      }
+      else{
+        improve_group_index = i;
+        if(i == 0) {
+           lo_improve = 51;
+           hi_improve = 1000;
+        }
+        else if(i == 1){
+          lo_improve = 26;
+          hi_improve = 50;
+        }
+        else if(i == 2){
+          lo_improve = 1;
+          hi_improve = 25;
+        }
+        else{
+          lo_improve = -1000;
+          hi_improve = 0;
+        }
+      }
+    }
+  }
+  if(improve_group_index != -1)
+    improvement[improve_group_index].set_click_state(true);
 }

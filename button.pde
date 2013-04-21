@@ -49,7 +49,7 @@ class Button{
    }
    text(name, x_coord, y_coord, b_width, b_height);//,x_coord + b_width, y_coord + b_height);
  }
- 
+  
   public void draw_button_inactive() {
     fill(230);
     stroke(200);
@@ -57,5 +57,9 @@ class Button{
     textSize((b_width + b_height) * .3);
     fill(150);
     text(name, x_coord, y_coord, b_width, b_height);  
+  }
+  
+  public void set_click_state(boolean state){
+    clicked = state;
   }
 }
