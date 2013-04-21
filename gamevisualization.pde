@@ -13,10 +13,12 @@ int num_tasks_displayed;
 int first_task_displayed;
 
 Parser parser;
+PrePostParser diffparser;
 int start_index;   // topmost player displayed
 int end_index;     // bottommost player displayed
 ArrayList tasks;   // one entry per task page
 String players[];  // maps array indeces to player names
+float differences[]; //pre-post score differences, value is a %
 int selected_task; // which task is currently displayed
 int selected_mission;
 int num_players;
@@ -33,6 +35,8 @@ void setup(){
   frame.setResizable(true);
   setScreenDimensions();
   parser = new Parser("tasks.csv");
+  diffparser = new PrePostParser("scoredifference.csv");
+  differences = diffparser.get_differences();
   tasks = parser.getTasks();
   players = parser.getPlayers();
   num_players = parser.getNumPlayers();
