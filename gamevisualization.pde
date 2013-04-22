@@ -103,16 +103,21 @@ void draw(){
   text(t.get_name(), 0, 0, width, title_height);
   line(0, title_height + task_view_height, width, title_height + task_view_height);
   line(0, title_height + task_view_height + mission_caption_height,
-      width, title_height + task_view_height + mission_caption_height);
-  draw_mission_buttons();     
+      width, title_height + task_view_height + mission_caption_height);    
   for(int i = start_index; i < end_index; i++) {
     drawPlayer(find_player_with_rank(t, i + 1));
     
   //Testing out the drawing of one button;
   draw_task_buttons();
   draw_improve_buttons();
+  draw_mission_buttons();
   draw_player_scroll_buttons();
   }
+}
+
+void draw_mission_buttons(){
+  Task curr_task = (Task)tasks.get(selected_task);
+  curr_task.draw_buttons(); 
 }
 
 void draw_improve_buttons(){
@@ -195,12 +200,6 @@ void draw_player_scroll_buttons() {
     player_next.draw_button_inactive();
 }
 
-
-
-void draw_mission_buttons(){
-  //Needs to be filled in
-}
-
 int find_player_with_rank(Task t, int rank) {
   for(int i = 0; i < num_players; i++) {
     if(t.get_rank(i, selected_mission) == rank)
@@ -243,6 +242,12 @@ void drawPlayer(int player) {
 
 
 void mouseMoved(){
+  
+  for(int i = 0; i < tasks.size(); i++){
+    Task t = (Task)tasks.get(i);
+    t.check_button_intersections();
+  }
+  
   for(int i = 0; i < task_buttons.length; i++){
     task_buttons[i].check_intersection();
   }
@@ -256,6 +261,14 @@ void mouseMoved(){
 }
 
 void mouseClicked(){
+  
+  for(int i = 0; i < tasks.size(); i++){
+   Task t = (Task)tasks.get(i);
+   int temp = t.check_clicked_buttons();
+   if(temp != -1)
+     selected_mission = temp;
+  }
+  
   for(int i = 0; i < task_buttons.length; i++){
     if(task_buttons[i].clicked_on()){
       selected_task = i;

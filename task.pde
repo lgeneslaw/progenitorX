@@ -8,6 +8,7 @@ class Task{
                 //Second index corresponds to mission
  ArrayList columns;
  String name;
+ Button mission_buttons[];
  
  //this will need to be changed
  
@@ -79,7 +80,11 @@ class Task{
        ranks[i][j] = 0;
      }
    }
-   
+   mission_buttons = new Button[num_columns];
+   for(int i = 0; i < mission_buttons.length; i++){
+     Column col = (Column)columns.get(i);
+     mission_buttons[i] = new Button("Objective " + col.get_objective_number());
+   }
    sort_missions();
  }
  
@@ -151,4 +156,35 @@ class Task{
      println(' ');
    }
  }
+ 
+ public void check_button_intersections(){
+   for(int i = 0; i < mission_buttons.length; i++){
+     mission_buttons[i].check_intersection();
+   }
+ }
+ 
+ public int check_clicked_buttons(){
+  int toReturn = -1;
+  for(int i = 0; i < mission_buttons.length; i++){
+     if(mission_buttons[i].clicked_on()){
+       toReturn = i;
+     }
+  }
+  return toReturn;
+ }
+  
+ public void draw_buttons(){
+   float b_height = control_space_height / 2;
+   float b_width = (width / 2 / columns.size()) * .75;
+   float y = title_height + task_view_height;
+   float box_width = (width - string_width - player_scroll_width - 5) / columns.size();
+   float x = string_width + 5 + (.25 * box_width);
+   float button_spacing = box_width;
+   for(int i = 0; i < mission_buttons.length; i++){
+    mission_buttons[i].update_button(x, y, b_width, b_height);
+    mission_buttons[i].draw_button();
+    x += button_spacing;
+   }   
+  }
+      
 }
