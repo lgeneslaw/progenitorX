@@ -271,12 +271,6 @@ void mouseMoved(){
 
 void mouseClicked(){
   
-  Task curr = (Task)tasks.get(selected_task);
-  int temp = curr.check_clicked_buttons();
-  if(temp != -1)
-    selected_mission = temp;
-  curr.set_click_state();
-  
   for(int i = 0; i < task_buttons.length; i++){
     if(task_buttons[i].clicked_on()){
       selected_task = i;
@@ -285,9 +279,13 @@ void mouseClicked(){
       selected.set_click_state();
     }
   }
-  
   task_buttons[selected_task].set_click_state(true);
   
+  Task curr = (Task)tasks.get(selected_task);
+  int temp = curr.check_clicked_buttons();
+  if(temp != -1)
+    selected_mission = temp;
+  curr.set_click_state();
   
   if(task_prev.check_intersection()){
     if(first_task_displayed != 0){
