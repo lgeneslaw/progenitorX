@@ -111,11 +111,13 @@ void draw(){
     drawPlayer(find_player_with_rank(t, i + 1));
     
   //Testing out the drawing of one button;
+
+  }
   draw_task_buttons();
   draw_improve_buttons();
   draw_mission_buttons();
   draw_player_scroll_buttons();
-  }
+  drawColorKey();
 }
 
 void draw_mission_buttons(){
@@ -181,13 +183,43 @@ void draw_task_buttons(){
 }
 
 
+void drawColorKey() {
+  final float COLOR_DIFF = (255 * 2) / num_players;
+  float center_x = width - (player_scroll_width / 2);
+  float box_width = player_scroll_width * .4;
+  float box_height = .3 * height;
+  float y = title_height + 20;
+  fill(0);
+  textSize((width + height) * .008);
+  textAlign(CENTER, CENTER);
+  text("high %ile", width - player_scroll_width / 2, title_height + 3);
+  float small_height = box_height / num_players;
+  for(int i = 0; i < num_players; i++) {
+    float c = i * COLOR_DIFF;
+    if(c < 255) {
+      fill(255, 50 + (c * 100) / 255, c);
+    }
+    else {
+      c = c % 255;
+      fill((255 - c), 150, 255);
+    }
+    noStroke();
+    rect(center_x - (box_width/2), y, box_width, small_height);
+    y += small_height;
+  }
+  fill(0);
+  text("low %ile", width - player_scroll_width / 2, y + 15);
+}
+    
+
+
 void draw_player_scroll_buttons() {
   float b_width = .6 * player_scroll_width;
   float b_height = .07 * height;
-  float center_y = (height - title_height - control_space_height) / 2;
+  float pos_y = (height - title_height - control_space_height) * .7;
   float center_x = width - (player_scroll_width / 2);
   float x = center_x - (b_width / 2);
-  float y = center_y - (1.5 * b_height);
+  float y = pos_y - (1.5 * b_height);
   
   player_prev.update_button(x, y, b_width, b_height);
   if(start_index != 0)
@@ -195,7 +227,7 @@ void draw_player_scroll_buttons() {
   else
     player_prev.draw_button_inactive();
     
-  y = center_y + (2 * b_height);
+  y = pos_y + (b_height);
   player_next.update_button(x, y, b_width, b_height);
   if(end_index != num_players)
     player_next.draw_button();
@@ -237,11 +269,11 @@ void drawPlayer(int player) {
   for(int i = 0; i < num_missions; i++) {
     float c = t.get_rank(player, i) * COLOR_DIFF;
     if(c < 255) {
-      fill(.8 * 255, 0, .8 * c);
+      fill(255, 50 + (c * 100) / 255, c);
     }
     else {
       c = c % 255;
-      fill((255 - c) * .8, 0, 255 * .8);
+      fill((255 - c), 150, 255);
     }
     rect(x_pos + (i * box_width), y_pos, box_width, row_height);
   }
@@ -279,13 +311,16 @@ void mouseClicked(){
       selected.set_click_state();
     }
   }
-  task_buttons[selected_task].set_click_state(true);
   
   Task curr = (Task)tasks.get(selected_task);
   int temp = curr.check_clicked_buttons();
   if(temp != -1)
     selected_mission = temp;
   curr.set_click_state();
+  
+  
+  task_buttons[selected_task].set_click_state(true);
+  
   
   if(task_prev.check_intersection()){
     if(first_task_displayed != 0){
