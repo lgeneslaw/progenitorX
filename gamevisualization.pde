@@ -69,6 +69,9 @@ void setup(){
   improvement[1] = new Button("50 - 26");
   improvement[2] = new Button("25 - 1");
   improvement[3] = new Button("Did not improve");
+  Task first = (Task)tasks.get(0);
+  first.set_click_state();
+  task_buttons[selected_task].set_click_state(true);
 }
 
 void setScreenDimensions() {
@@ -262,17 +265,18 @@ void mouseMoved(){
 
 void mouseClicked(){
   
-  for(int i = 0; i < tasks.size(); i++){
-   Task t = (Task)tasks.get(i);
-   int temp = t.check_clicked_buttons();
-   if(temp != -1)
-     selected_mission = temp;
-  }
+  Task curr = (Task)tasks.get(selected_task);
+  int temp = curr.check_clicked_buttons();
+  if(temp != -1)
+    selected_mission = temp;
+  curr.set_click_state();
   
   for(int i = 0; i < task_buttons.length; i++){
     if(task_buttons[i].clicked_on()){
       selected_task = i;
       selected_mission = 0;
+      Task selected = (Task)tasks.get(i);
+      selected.set_click_state();
     }
   }
   

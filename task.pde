@@ -1,4 +1,5 @@
 class Task{
+ int clicked_button;
  int num_columns;
  int num_players;
  boolean on_task;
@@ -164,13 +165,19 @@ class Task{
  }
  
  public int check_clicked_buttons(){
-  int toReturn = -1;
+  clicked_button = -1;
   for(int i = 0; i < mission_buttons.length; i++){
      if(mission_buttons[i].clicked_on()){
-       toReturn = i;
+       clicked_button = i;
      }
   }
-  return toReturn;
+  return clicked_button;
+ }
+ 
+ public void set_click_state(){
+  if(selected_mission != -1){
+   mission_buttons[selected_mission].set_click_state(true);
+  }
  }
   
  public void draw_buttons(){
