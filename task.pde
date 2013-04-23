@@ -11,8 +11,6 @@ class Task{
  String name;
  Button mission_buttons[];
  
- //this will need to be changed
- 
  public Task(Column col, int _num_players){
    name = col.get_task_name();
    columns = new ArrayList();
@@ -20,16 +18,6 @@ class Task{
    num_columns = 1;
    num_players = _num_players;
  }
- 
- /*public Task(String _name, int _num_missions, int _num_players){
-   name = _name;
-   on_task = determine_onoff();
-   selected = 0; //Default to sorting by first mission.
-   num_missions = _num_missions;
-   num_players = _num_players;
-   scores = new int[num_players][num_missions];
-   ranks = new int[num_players][num_missions];
- }*/
  
  public int get_objective_num(int index){
    Column col = (Column)columns.get(index);
@@ -181,7 +169,7 @@ class Task{
  }
   
  public void draw_buttons(){
-   float b_height = control_space_height / 2;
+   float b_height = mission_caption_height;
    float b_width = (width / 2 / columns.size()) * .75;
    float y = title_height + task_view_height;
    float box_width = (width - string_width - player_scroll_width - 5) / columns.size();
@@ -191,7 +179,7 @@ class Task{
     mission_buttons[i].update_button(x, y, b_width, b_height);
     mission_buttons[i].draw_button();
     x += button_spacing;
-   }   
+   }  
   }
       
 }

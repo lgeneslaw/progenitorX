@@ -80,8 +80,8 @@ void setScreenDimensions() {
   mission_caption_height = title_height;
   task_view_height = height - title_height - mission_caption_height - control_space_height;
   string_width = .1 * width;
-  row_height = .03 * task_view_height;
-  spacing = .25 * row_height;
+  row_height = 15;
+  spacing = .3 * row_height;
   max_players_displayable = (int)(task_view_height / (row_height + spacing));
   player_scroll_width = .07 * width;
 }
@@ -222,7 +222,7 @@ void drawPlayer(int player) {
   fill(0);
   int diff = int(differences[player]);
   if(improve_group_index != -1 && diff >= lo_improve && diff <= hi_improve){
-    strokeWeight(3);
+    strokeWeight(2.5);
   }
   else{
     strokeWeight(1);   
@@ -233,10 +233,16 @@ void drawPlayer(int player) {
   int num_missions = t.get_num_objectives();
   float box_width = (width - string_width - player_scroll_width - 5) / num_missions;
   x_pos += (string_width + 5);
-  final int COLOR_DIFF = 230 / num_players;
+  final float COLOR_DIFF = (255 * 2) / num_players;
   for(int i = 0; i < num_missions; i++) {
-    bg = 255 - (25 + (t.get_rank(player, i) * COLOR_DIFF));
-    fill(255, bg, bg);
+    float c = t.get_rank(player, i) * COLOR_DIFF;
+    if(c < 255) {
+      fill(.8 * 255, 0, .8 * c);
+    }
+    else {
+      c = c % 255;
+      fill((255 - c) * .8, 0, 255 * .8);
+    }
     rect(x_pos + (i * box_width), y_pos, box_width, row_height);
   }
   strokeWeight(1);
