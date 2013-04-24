@@ -177,7 +177,10 @@ class Task{
    float button_spacing = box_width;
    for(int i = 0; i < mission_buttons.length; i++){
     mission_buttons[i].update_button(x, y, b_width, b_height);
-    mission_buttons[i].draw_button();
+    if(mission_buttons.length == 1)
+      mission_buttons[i].draw_button(.04);
+    else
+      mission_buttons[i].draw_button(-1);
     x += button_spacing;
    }  
   }

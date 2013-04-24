@@ -83,6 +83,8 @@ void setScreenDimensions() {
   row_height = 15;
   spacing = .3 * row_height;
   max_players_displayable = (int)(task_view_height / (row_height + spacing));
+  if(max_players_displayable > num_players)
+    max_players_displayable = num_players;
   player_scroll_width = .07 * width;
 }
 
@@ -108,7 +110,7 @@ void draw(){
     drawPlayer(find_player_with_rank(t, i + 1));
   line(0, height - control_space_height * .6, width, height - control_space_height * .6);
   fill(0);
-  textSize(control_space_height * .25);
+  textSize((control_space_height + width) * .02);
   textAlign(CENTER, BOTTOM);
   text("Tasks", width * .28, height - control_space_height * .6);
   text("Improvement Percentiles", width * .76, height - control_space_height * .6);
@@ -136,7 +138,7 @@ void draw_improve_buttons(){
    for(int i = 0; i < num_improves_displayed; i++){
      improvement[i].update_button(x, y, b_width, b_height);
      x = x + button_spacing + b_width;
-     improvement[i].draw_button();
+     improvement[i].draw_button(-1);
    }
    
 }
@@ -152,26 +154,25 @@ void draw_task_buttons(){
   
   task_prev.update_button(x, y, ib_width, b_height);
   if(first_task_displayed != 0)
-    task_prev.draw_button();
+    task_prev.draw_button(-1);
   else
     task_prev.draw_button_inactive();
   stroke(0);
   x = x + button_spacing + ib_width;
   
+  for(int i = 0; i < task_buttons.length; i++){
+    task_buttons[i].update_button(0, 0, 0, 0);
+  }
+  
   for(int i = first_task_displayed; i < (first_task_displayed + num_tasks_displayed); i++){
-    if(i < first_task_displayed || i > (first_task_displayed + num_tasks_displayed)){
-      task_buttons[i].update_button(0, 0, 0, 0);
-    }
-    else{
-      task_buttons[i].update_button(x, y, b_width, b_height);
-      task_buttons[i].draw_button();
-      x = x + button_spacing + b_width;
-    }
+    task_buttons[i].update_button(x, y, b_width, b_height);
+    x = x + button_spacing + b_width;
+    task_buttons[i].draw_button(-1);
   }
   
   task_next.update_button(x, y, ib_width, b_height);
   if(first_task_displayed + num_tasks_displayed != tasks.size())
-    task_next.draw_button();
+    task_next.draw_button(-1);
   else{
     fill(230);
     stroke(200);
@@ -225,14 +226,14 @@ void draw_player_scroll_buttons() {
   
   player_prev.update_button(x, y, b_width, b_height);
   if(start_index != 0)
-    player_prev.draw_button();
+    player_prev.draw_button(-1);
   else
     player_prev.draw_button_inactive();
     
   y = pos_y + (b_height);
   player_next.update_button(x, y, b_width, b_height);
   if(end_index != num_players)
-    player_next.draw_button();
+    player_next.draw_button(-1);
   else
     player_next.draw_button_inactive();
 }
@@ -255,12 +256,6 @@ void drawPlayer(int player) {
   float y_pos = title_height + (player_pos * row_height) + (player_pos * spacing);
   fill(0);
   int diff = int(differences[player]);
-  if(improve_group_index != -1 && diff >= lo_improve && diff <= hi_improve){
-    strokeWeight(2.5);
-  }
-  else{
-    strokeWeight(1);   
-  }
   textSize(row_height * .7);
   stroke(0);
   text(players[player], x_pos, y_pos, string_width, row_height);
@@ -268,15 +263,25 @@ void drawPlayer(int player) {
   float box_width = (width - string_width - player_scroll_width - 5) / num_missions;
   x_pos += (string_width + 5);
   final float COLOR_DIFF = (255 * 2) / num_players;
+ 
+ 
   for(int i = 0; i < num_missions; i++) {
     float c = t.get_rank(player, i) * COLOR_DIFF;
-    if(c < 255) {
-      fill(255, 50 + (c * 100) / 255, c);
+    if(improve_group_index == -1 || (improve_group_index != -1 && diff >= lo_improve && diff <= hi_improve)){
+      if(c < 255) {
+        fill(255, 50 + (c * 100) / 255, c);
+      }
+      else {
+        c = c % 255;
+        fill((255 - c), 150, 255);
+      }
     }
-    else {
-      c = c % 255;
-      fill((255 - c), 150, 255);
+    else{
+     fill(200, 200, 200);
     }
+    
+    
+    
     rect(x_pos + (i * box_width), y_pos, box_width, row_height);
   }
   strokeWeight(1);

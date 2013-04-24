@@ -32,12 +32,13 @@ class Button{
   return clicked;
  }
  
- public void draw_button(){
+ public void draw_button(float size){
+   stroke(0);
    if(intersected || clicked){
-     fill(145, 255, 215);
+     fill(204, 255, 255);
    }
    else{
-     fill(125, 125, 255);
+     fill(0, 150, 255);
    }
    rect(x_coord, y_coord, b_width, b_height);
    fill(0);
@@ -46,6 +47,9 @@ class Button{
    }
    else{
      textSize((b_width + b_height) * .06);
+     if(size != -1){
+       textSize((b_width + b_height) * size);
+     }
    }
    textAlign(CENTER, CENTER);
    text(name, x_coord, y_coord, b_width, b_height);
