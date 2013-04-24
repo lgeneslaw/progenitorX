@@ -47,7 +47,8 @@ class Button{
    else{
      textSize((b_width + b_height) * .06);
    }
-   text(name, x_coord, y_coord, b_width, b_height);//,x_coord + b_width, y_coord + b_height);
+   textAlign(CENTER, CENTER);
+   text(name, x_coord, y_coord, b_width, b_height);
  }
   
   public void draw_button_inactive() {
@@ -56,6 +57,7 @@ class Button{
     rect(x_coord, y_coord, b_width, b_height);
     textSize((b_width + b_height) * .3);
     fill(150);
+    textAlign(CENTER, CENTER);
     text(name, x_coord, y_coord, b_width, b_height);  
   }
   

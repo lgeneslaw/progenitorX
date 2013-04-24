@@ -76,7 +76,7 @@ void setup(){
 
 void setScreenDimensions() {
   title_height = .05 * height;
-  control_space_height = .1 * height;
+  control_space_height = .15 * height;
   mission_caption_height = title_height;
   task_view_height = height - title_height - mission_caption_height - control_space_height;
   string_width = .1 * width;
@@ -103,15 +103,15 @@ void draw(){
   textAlign(CENTER, CENTER);
   textSize(.8 * title_height);
   fill(0);
-  text(t.get_name(), 0, 0, width, title_height);
-  line(0, title_height + task_view_height, width, title_height + task_view_height);
-  line(0, title_height + task_view_height + mission_caption_height,
-      width, title_height + task_view_height + mission_caption_height);    
+  text(t.get_name(), 0, 0, width, title_height);  
   for(int i = start_index; i < end_index; i++) {
     drawPlayer(find_player_with_rank(t, i + 1));
-    
-  //Testing out the drawing of one button;
-
+  line(0, height - control_space_height * .6, width, height - control_space_height * .6);
+  fill(0);
+  textSize(control_space_height * .25);
+  textAlign(CENTER, BOTTOM);
+  text("Tasks", width * .28, height - control_space_height * .6);
+  text("Improvement Percentiles", width * .76, height - control_space_height * .6);
   }
   draw_task_buttons();
   draw_improve_buttons();
@@ -126,11 +126,12 @@ void draw_mission_buttons(){
 }
 
 void draw_improve_buttons(){
-   float y = height - (control_space_height * .75);
+   float y = height - (control_space_height * .5);
    float b_width = (width / 2 / num_improves_displayed) * .75;
    float button_spacing = (b_width / .75) * .125;
    float x = button_spacing + (width / 2) * 12/11;
-   float b_height = control_space_height / 2;
+   line(x - button_spacing * 1.2, height - (control_space_height * .6), x - button_spacing * 1.2, height);
+   float b_height = control_space_height / 2.5;
    
    for(int i = 0; i < num_improves_displayed; i++){
      improvement[i].update_button(x, y, b_width, b_height);
@@ -141,11 +142,11 @@ void draw_improve_buttons(){
 }
 
 void draw_task_buttons(){
-  float y = height - (control_space_height * .75);
+  float y = height - (control_space_height * .5);
   float b_width = (width / 2 / num_tasks_displayed) * .75;
   float button_spacing = (b_width / .75) * .125;
   float x = button_spacing;
-  float b_height = control_space_height / 2;
+  float b_height = control_space_height / 2.5;
   
   float ib_width = b_width * .25;
   
@@ -178,7 +179,7 @@ void draw_task_buttons(){
     textSize((ib_width + b_height) * .4);
     fill(150);
     text(">", x, y, ib_width, b_height);   
-  }  
+  }
   stroke(0);
 }
 
@@ -198,12 +199,13 @@ void drawColorKey() {
     float c = i * COLOR_DIFF;
     if(c < 255) {
       fill(255, 50 + (c * 100) / 255, c);
+      stroke(255, 50 + (c * 100) / 255, c);
     }
     else {
       c = c % 255;
       fill((255 - c), 150, 255);
+      stroke((255 - c), 150, 255);
     }
-    noStroke();
     rect(center_x - (box_width/2), y, box_width, small_height);
     y += small_height;
   }
